@@ -1,13 +1,14 @@
 local M = {}
 
 M.backgroundImage = love.graphics.newImage(Settings.backgroundImage)
+M.backgroundImage:setFilter("nearest", "nearest") -- for sharp rendering and not blurry
 
-local  drawBackground = function ()
+local drawBackground = function ()
     local bgW, bgH = M.backgroundImage:getDimensions()
     local screenW, screenH = love.graphics.getDimensions()
     local scale = math.max(screenW / bgW, screenH / bgH)
-    local offsetX = (screenW - bgW * scale) * 0.5
-    local offsetY = (screenH - bgH * scale) * 0.5
+    local offsetX = math.floor((screenW - bgW * scale) * 0.5 + 0.5)
+    local offsetY = math.floor((screenH - bgH * scale) * 0.5 + 0.5)
 
     love.graphics.draw(M.backgroundImage, offsetX, offsetY, 0, scale, scale)
 end

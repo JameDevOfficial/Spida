@@ -12,8 +12,6 @@ function spider:render()
     local xScale = (self.size.W / w) * self.scale.X
     local yScale = (self.size.H / h) * self.scale.Y
     love.graphics.draw(self.sprite, self.position.X, self.position.Y, 0, xScale, yScale, self.offset.X, self.offset.Y)
-    print("Rendered spider at ", self.sprite, self.position.X, self.position.Y, 0, xScale, yScale, self.offset.X,
-        self.offset.Y)
 end
 
 function spider:update(dt)
