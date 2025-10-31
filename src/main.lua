@@ -7,7 +7,7 @@ Screen = {}
 Spiders = {}
 
 function love.load()
-    UI.windowResized()
+    Screen = UI.windowResized()
     math.randomseed(os.time());
 
     -- sprites
@@ -17,6 +17,10 @@ end
 
 function love.update(dt)
     if IsPaused then return end
+
+    for i, v in ipairs(Spiders) do
+        v:update(dt)
+    end
 end
 
 function love.draw()
@@ -27,7 +31,7 @@ function love.draw()
 end
 
 function love.resize()
-    UI.windowResized()
+    Screen = UI.windowResized()
 end
 
 function love.keypressed(key, scancode, isrepeat)

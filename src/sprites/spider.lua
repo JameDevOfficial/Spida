@@ -41,13 +41,21 @@ function spider:update(dt)
         self.velocity.Y = -self.velocity.Y
     end
 
-    if Settings.verticalMovement then
-        if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
-            self.velocity.Y = self.velocity.Y + Settings.spider.speed * dt
-        end
-        if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
-            self.velocity.Y = self.velocity.Y - Settings.spider.speed * dt
-        end
+    if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
+        self.velocity.X = self.velocity.X - Settings.spider.speed * dt
+        print("Moving left")
+    end
+    if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
+        self.velocity.X = self.velocity.X + Settings.spider.speed * dt
+        print("Moving right")
+    end
+    if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
+        self.velocity.Y = self.velocity.Y + Settings.spider.speed * dt
+        print("Moving down")
+    end
+    if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
+        self.velocity.Y = self.velocity.Y - Settings.spider.speed * dt
+        print("Moving up")
     end
 end
 
