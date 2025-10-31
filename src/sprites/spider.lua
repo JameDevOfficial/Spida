@@ -23,21 +23,22 @@ function spider:update(dt)
     self.rotation = math.floor(self.rotation * (self.damping ^ dt) * 100 + 0.5) / 100
 
     local w, h = self:getScaledDimensions()
+    local ax, ay = self:getActualPostion()
 
-    if self.position.X < 0 then
-        self.position.X = 0
+    if ax < 0 then
+        self.position.X = self.offset.X * self.scale.X
         self.velocity.X = -self.velocity.X
     end
-    if self.position.Y < 0 then
-        self.position.Y = 0
+    if ay < 0 then
+        self.position.Y = self.offset.Y * self.scale.Y
         self.velocity.Y = -self.velocity.Y
     end
-    if self.position.X + w > Screen.X then
-        self.position.X = Screen.X - w
+    if ax + w > Screen.X then
+        self.position.X = Screen.X - w + (self.offset.X * self.scale.X)
         self.velocity.X = -self.velocity.X
     end
-    if self.position.Y + h > Screen.Y then
-        self.position.Y = Screen.Y - h
+    if ay + h > Screen.Y then
+        self.position.Y = Screen.Y - h + (self.offset.Y * self.scale.Y)
         self.velocity.Y = -self.velocity.Y
     end
 
@@ -83,8 +84,10 @@ function spider:getActualPostion()
 end
 
 function spider:getScaledDimensions()
-    local w, h = self.sprite:getDimensions()
-    return w * self.scale.X, h * self.scale.Y
+    -- The actual drawn width/height are derived from `self.size` and `self.scale`.
+    -- In render we compute xScale = (self.size.W / w) * self.scale.X so final width
+    -- becomes self.size.W * self.scale.X (similarly for height).
+    return self.size.W * self.scale.X, self.size.H * self.scale.Y
 end
 
 return spider
