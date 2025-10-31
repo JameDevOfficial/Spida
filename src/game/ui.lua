@@ -1,5 +1,22 @@
 local M = {}
 
+M.backgroundImage = love.graphics.newImage(Settings.backgroundImage)
+
+local  drawBackground = function ()
+    local bgW, bgH = M.backgroundImage:getDimensions()
+    local screenW, screenH = love.graphics.getDimensions()
+    local scale = math.max(screenW / bgW, screenH / bgH)
+    local offsetX = (screenW - bgW * scale) * 0.5
+    local offsetY = (screenH - bgH * scale) * 0.5
+
+    love.graphics.draw(M.backgroundImage, offsetX, offsetY, 0, scale, scale)
+end
+
+M.renderFrame = function ()
+    love.graphics.setBackgroundColor(1,1,1)
+    drawBackground()
+end
+
 M.windowResized = function()
     local screen = {
         X = 0,
