@@ -42,30 +42,29 @@ function spider:update(dt)
         self.velocity.Y = -self.velocity.Y
     end
 
+    if not self.isPlayer then return end
+
     if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
         self.velocity.X = self.velocity.X - Settings.spider.speed * dt
-        print("Moving left")
     end
     if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
         self.velocity.X = self.velocity.X + Settings.spider.speed * dt
-        print("Moving right")
     end
     if love.keyboard.isDown("s") or love.keyboard.isDown("down") then
         self.velocity.Y = self.velocity.Y + Settings.spider.speed * dt
-        print("Moving down")
     end
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
         self.velocity.Y = self.velocity.Y - Settings.spider.speed * dt
-        print("Moving up")
     end
-    if love.keyboard.isDown("space") then
-        self:saveLastLinePoint()
-    end
+    -- if love.keyboard.isDown("space") then
+    --     self:saveLastLinePoint()
+    -- end
 end
 
 function spider:new(opts)
     opts              = opts or {}
     local o           = setmetatable({}, self)
+    o.isPlayer        = opts.isPlayer or false
     o.scale           = opts.scale or { X = 1, Y = 1 }
     o.size            = opts.size or { W = 100, H = 100 }
     o.color           = opts.color or { 1, 1, 1, 1 }
