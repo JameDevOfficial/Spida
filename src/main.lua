@@ -39,10 +39,10 @@ function love.resize()
 end
 
 function love.keypressed(key, scancode, isrepeat)
-    if key == "space" then
-        Spiders[Player.spiderIndex]:saveLastLinePoint()
-        print("space")
-    else 
-        print(key..", " .. scancode)
-    end
+    -- if key == "space" then
+    --     Spiders[Player.spiderIndex]:saveLastLinePoint()
+    --     print("space")
+    -- else 
+    --     print(key..", " .. scancode)
+    -- end
 end

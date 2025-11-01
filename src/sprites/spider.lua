@@ -56,9 +56,9 @@ function spider:update(dt)
     if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
         self.velocity.Y = self.velocity.Y - Settings.spider.speed * dt
     end
-    -- if love.keyboard.isDown("space") then
-    --     self:saveLastLinePoint()
-    -- end
+    if love.keyboard.isDown("space") then
+        self:saveLastLinePoint()
+    end
 end
 
 function spider:new(opts)
@@ -81,9 +81,10 @@ function spider:new(opts)
     return o
 end
 
-function spider:saveLastLinePoint()
+function spider:saveLastLinePoint(newLine)
     local n = #self.netPoints
-    local p = { X = self.position.X, Y = self.position.Y }
+    local x,y = self:getActualPostion()
+    local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2 }
 
     if n < 2 then
         table.insert(self.netPoints, p)
