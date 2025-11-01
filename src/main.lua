@@ -26,6 +26,7 @@ end
 function love.draw()
     UI.renderFrame()
     for i, v in ipairs(Spiders) do
+        v:renderNet()
         v:render()
     end
 end
