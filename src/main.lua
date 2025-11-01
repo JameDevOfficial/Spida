@@ -14,10 +14,14 @@ function love.load()
     Screen = UI.windowResized()
     math.randomseed(os.time());
     Shader.loadShader()
+    BackgroundMusic = love.audio.newSource('assets/Spooky_Forest.mp3', 'stream')
+    BackgroundMusic:setLooping(true)
+    BackgroundMusic:play()
+    BackgroundMusic:setVolume(0.25)
     -- sprites
     Spider.initSpriteAsset()
     local spriteW, spriteH = Spider._sharedSprite:getDimensions()
-    table.insert(Spiders, Spider:new({ isPlayer = true, offset = { X = spriteW / 2, Y = spriteH / 2}}))
+    table.insert(Spiders, Spider:new({ isPlayer = true, offset = { X = spriteW / 2, Y = spriteH / 2 } }))
     Player.spiderIndex = #Spiders
 end
 
@@ -45,7 +49,7 @@ function love.keypressed(key, scancode, isrepeat)
     -- if key == "space" then
     --     Spiders[Player.spiderIndex]:saveLastLinePoint()
     --     print("space")
-    -- else 
+    -- else
     --     print(key..", " .. scancode)
     -- end
 end
