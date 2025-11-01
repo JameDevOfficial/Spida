@@ -6,6 +6,6 @@ M.Shader = true
 
 M.spider = {}
 M.spider.speed = 200
-M.spider.image = "assets/spider.png"
+M.spider.image = "assets/spider_small.png"
 
 return M

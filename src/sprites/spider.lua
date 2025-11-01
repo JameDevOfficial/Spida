@@ -11,7 +11,8 @@ function spider:render()
     local w, h = self.sprite:getDimensions()
     local xScale = (self.size.W / w) * self.scale.X
     local yScale = (self.size.H / h) * self.scale.Y
-    love.graphics.draw(self.sprite, self.position.X, self.position.Y, 0, xScale, yScale, self.offset.X, self.offset.Y)
+    love.graphics.draw(self.sprite, self.position.X, self.position.Y, self.rotation, xScale, yScale, self.offset.X,
+        self.offset.Y)
 end
 
 function spider:update(dt)
@@ -20,7 +21,11 @@ function spider:update(dt)
 
     self.velocity.X = self.velocity.X * (self.damping ^ dt)
     self.velocity.Y = self.velocity.Y * (self.damping ^ dt)
-    self.rotation = math.floor(self.rotation * (self.damping ^ dt) * 100 + 0.5) / 100
+
+    local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
+    if speed > 10 then
+        self.rotation = math.atan2(self.velocity.Y, self.velocity.X) - math.pi / 2
+    end
 
     local w, h = self:getScaledDimensions()
     local ax, ay = self:getActualPostion()
@@ -65,10 +70,10 @@ function spider:new(opts)
     opts              = opts or {}
     local o           = setmetatable({}, self)
     o.isPlayer        = opts.isPlayer or false
-    o.scale           = opts.scale or { X = 1, Y = 1 }
-    o.size            = opts.size or { W = 100, H = 100 }
+    o.size            = opts.size or { W = spider._sharedSprite:getWidth(), H = spider._sharedSprite:getHeight() }
     o.color           = opts.color or { 1, 1, 1, 1 }
-    o.position        = opts.position or { X = 100, Y = 100 }
+    o.position        = opts.position or
+        { X = 100, Y = 100 }
     o.velocity        = opts.velocity or { X = 0, Y = 0 }
     o.speed           = opts.speed or Settings.spider.speed
     o.damping         = opts.damping or 0.5
@@ -78,12 +83,13 @@ function spider:new(opts)
     o.netPoints       = {}
     o.lastPoint       = { X = 0, Y = 0 }
     o.lastPointInLine = { X = 0, Y = 0 }
+    o.scale           = { X = 1, Y = 1 }
     return o
 end
 
 function spider:saveLastLinePoint(newLine)
     local n = #self.netPoints
-    local x,y = self:getActualPostion()
+    local x, y = self:getActualPostion()
     local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2 }
 
     if n < 2 then
@@ -113,7 +119,7 @@ function spider:renderNet()
     love.graphics.setColor(1, 1, 1, 0.8)
     love.graphics.setLineWidth(2)
     for i = 1, #self.netPoints - 1 do
-        local p1, p2 = self.netPoints[i], self.netPoints[i+1]
+        local p1, p2 = self.netPoints[i], self.netPoints[i + 1]
         love.graphics.line(p1.X, p1.Y, p2.X, p2.Y)
     end
 end
@@ -125,7 +131,8 @@ function spider:getActualPostion()
 end
 
 function spider:getScaledDimensions()
-    return self.size.W * self.scale.X, self.size.H * self.scale.Y
+    local spriteW, spriteH = Spider._sharedSprite:getDimensions()
+    return spriteW * self.scale.X, spriteH * self.scale.Y
 end
 
 return spider

@@ -16,7 +16,8 @@ function love.load()
     Shader.loadShader()
     -- sprites
     Spider.initSpriteAsset()
-    table.insert(Spiders, Spider:new({ isPlayer = true }))
+    local spriteW, spriteH = Spider._sharedSprite:getDimensions()
+    table.insert(Spiders, Spider:new({ isPlayer = true, offset = { X = spriteW / 2, Y = spriteH / 2}}))
     Player.spiderIndex = #Spiders
 end
 
