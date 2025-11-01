@@ -1,6 +1,7 @@
 Settings = require("game.settings")
 Spider = require("sprites.spider")
 UI = require("game.ui")
+Shader = require("game.shader")
 
 IsPaused = false
 Screen = {}
@@ -12,6 +13,7 @@ Player = {
 function love.load()
     Screen = UI.windowResized()
     math.randomseed(os.time());
+    Shader.loadShader()
     -- sprites
     Spider.initSpriteAsset()
     table.insert(Spiders, Spider:new({ isPlayer = true }))
@@ -20,7 +22,6 @@ end
 
 function love.update(dt)
     if IsPaused then return end
-
     for i, v in ipairs(Spiders) do
         v:update(dt)
     end
@@ -28,6 +29,7 @@ end
 
 function love.draw()
     UI.renderFrame()
+    Shader.drawShader()
     for i, v in ipairs(Spiders) do
         v:renderNet()
         v:render()
