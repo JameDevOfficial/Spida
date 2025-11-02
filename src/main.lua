@@ -53,3 +53,9 @@ function love.keypressed(key, scancode, isrepeat)
     --     print(key..", " .. scancode)
     -- end
 end
+
+function love.keyreleased(key, scancode)
+    if key == "space" then
+        Spiders[Player.spiderIndex]:saveLastLinePoint(true)
+    end
+end

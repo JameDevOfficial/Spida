@@ -103,9 +103,10 @@ function spider:new(opts)
 end
 
 function spider:saveLastLinePoint(newLine)
+    if newLine == nil then newLine = false end
     local n = #self.netPoints
     local x, y = self:getActualPostion()
-    local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2 }
+    local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2, newNet = newLine }
 
     if n < 2 then
         table.insert(self.netPoints, p)
@@ -135,7 +136,9 @@ function spider:renderNet()
     love.graphics.setLineWidth(2)
     for i = 1, #self.netPoints - 1 do
         local p1, p2 = self.netPoints[i], self.netPoints[i + 1]
-        love.graphics.line(p1.X, p1.Y, p2.X, p2.Y)
+        if p1.newNet == false then
+            love.graphics.line(p1.X, p1.Y, p2.X, p2.Y)
+        end
     end
 end
 
