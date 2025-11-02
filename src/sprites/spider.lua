@@ -79,6 +79,12 @@ function spider:update(dt)
     if love.keyboard.isDown("space") then
         self:saveLastLinePoint()
     end
+
+    local cTime = love.timer.getTime()
+    if #self.netPoints < 2 then return end
+    if -(self.netPoints[1].sTime - cTime) > Settings.spider.maxTTL then
+        table.remove(self.netPoints, 1)
+    end
 end
 
 function spider:new(opts)

@@ -9,5 +9,6 @@ M.spider = {}
 M.spider.speed = 200
 M.spider.image = "assets/spider_small.png"
 M.spider.maxNetPoints = 25
+M.spider.maxTTL = 20 -- seconds
 
 return M
