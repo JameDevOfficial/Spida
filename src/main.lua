@@ -46,7 +46,6 @@ function love.load()
     Fly.initSpriteAsset()
     spriteW, spriteH = Fly._sharedSprite:getDimensions()
     table.insert(Flies, Fly:new({ offset = { X = spriteW / 2, Y = spriteH / 2 } }))
-
 end
 
 function love.update(dt)
@@ -58,7 +57,9 @@ function love.update(dt)
         v:update(dt)
     end
     for i = #Flies, 1, -1 do
-        Flies[i]:update(dt)
+        if Flies[i] then
+            Flies[i]:update(dt)
+        end
     end
     Fly.spawnRandom(dt)
 end

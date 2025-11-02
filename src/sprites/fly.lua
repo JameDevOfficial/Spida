@@ -133,6 +133,7 @@ function fly:update(dt)
             end
         end
     else
+        self.isCaught = false
         self.caughtTimer = 0
     end
 
@@ -182,13 +183,18 @@ function fly:update(dt)
 end
 
 function fly:new(opts)
-    opts              = opts or {}
-    local o           = setmetatable({}, self)
+    opts          = opts or {}
+    local o       = setmetatable({}, self)
+    local randPos = math.random(1, 2)
+    if randPos == 1 then
+        o.position = { X = math.random(0, Screen.X), Y = (math.random(1, 2) == 1 and 0 or Screen.Y) }
+    else
+        o.position = { X = (math.random(1, 2) == 1 and 0 or Screen.X), Y = math.random(0, Screen.Y) }
+    end
+
     o.isPlayer        = opts.isPlayer or false
     o.size            = opts.size or { W = fly._sharedSprite:getWidth(), H = fly._sharedSprite:getHeight() }
     o.color           = opts.color or { 1, 1, 1, 1 }
-    o.position        = opts.position or
-        { X = 0, Y = 0 }
     o.velocity        = opts.velocity or { X = 0, Y = 0 }
     o.speed           = opts.speed or Settings.fly.speed
     o.damping         = opts.damping or 0.5
