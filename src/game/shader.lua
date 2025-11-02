@@ -25,7 +25,8 @@ vec4 effect(vec4 color, Image image, vec2 uvs, vec2 screen_coords){
     vec2 norm_screen = screen_coords / screen;
     vec3 diffuse = vec3(0);
 
-    for (int i = 0; i < num_lights; i++) {
+    for (int i = 0; i < NUM_LIGHTS; i++) {
+        if (i >= num_lights) break;
         Light light = lights[i];
         vec2 norm_pos = light.position / screen;
 
@@ -58,16 +59,22 @@ function M.drawShader()
 
     love.graphics.setShader(shader)
 
+    local dpi = 1
+    if love.window.getDPIScale then
+        local ok, s = pcall(love.window.getDPIScale)
+        if ok and type(s) == "number" then dpi = s end
+    end
+
     shader:send("screen", {
-        love.graphics.getWidth(),
-        love.graphics.getHeight()
+        love.graphics.getWidth() * dpi,
+        love.graphics.getHeight() * dpi
     })
 
     shader:send("num_lights", 1)
 
     do
         local name = "lights[" .. 0 .. "]"
-        shader:send(name .. ".position", { cx, cy })
+        shader:send(name .. ".position", { cx * dpi, cy * dpi })
         shader:send(name .. ".diffuse", { 2.5, 2.5, 2.5 })
         shader:send(name .. ".power", 128)
     end
