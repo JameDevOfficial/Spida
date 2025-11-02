@@ -39,6 +39,7 @@ function love.update(dt)
     for i, v in ipairs(Flies) do
         v:update(dt)
     end
+    Fly.spawnRandom(dt)
 end
 
 function love.draw()

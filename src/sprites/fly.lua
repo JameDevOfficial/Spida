@@ -16,6 +16,23 @@ function fly._atan2(y, x)
     end
 end
 
+fly.spawnDelay = 0
+function fly.spawnRandom(dt)
+    fly.spawnDelay = fly.spawnDelay + dt
+    if fly.spawnDelay < 1 then
+        return
+    end
+
+    local rand = math.random(1, 100)
+    fly.spawnDelay = 0
+    if rand > Settings.fly.spawnChance then
+        return
+    end
+
+    local spriteW, spriteH = Fly._sharedSprite:getDimensions()
+    table.insert(Flies, Fly:new({ offset = { X = spriteW / 2, Y = spriteH / 2 } }))
+end
+
 function fly.initSpriteAsset()
     fly._sharedSprite = love.graphics.newImage(Settings.fly.image)
 end
@@ -24,10 +41,29 @@ function fly:render()
     if not self.sprite then return end
     love.graphics.setColor(self.color)
     local w, h = self.sprite:getDimensions()
-    local xScale = (self.size.W / w) * self.scale.X
+    local flipScale = self.velocity.X < 0 and -1 or 1
+
+    local xScale = (self.size.W / w) * self.scale.X * flipScale
     local yScale = (self.size.H / h) * self.scale.Y
     love.graphics.draw(self.sprite, self.position.X, self.position.Y, self.rotation, xScale, yScale, self.offset.X,
         self.offset.Y)
+end
+
+function fly:crawl(dt)
+    local playerSpider = Spiders[Player.spiderIndex]
+    local sX, sY = playerSpider:getActualPostion()
+
+    local fX, fY = self:getActualPostion()
+    local dX = sX - fX
+    local dY = sY - fY
+    local dist = math.sqrt(dX * dX + dY * dY)
+
+    if dist > 20 then
+        local dirX = dX / dist
+        local dirY = dY / dist
+        self.velocity.X = self.velocity.X + dirX * Settings.fly.speed * dt
+        self.velocity.Y = self.velocity.Y + dirY * Settings.fly.speed * dt
+    end
 end
 
 function fly:update(dt)
@@ -36,11 +72,31 @@ function fly:update(dt)
 
     self.velocity.X = self.velocity.X * (self.damping ^ dt)
     self.velocity.Y = self.velocity.Y * (self.damping ^ dt)
+    self:crawl(dt)
 
     local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
     if speed > 10 then
-        self.rotation = fly._atan2(self.velocity.Y, self.velocity.X) - math.pi / 2
+        local angle = fly._atan2(self.velocity.Y, self.velocity.X) - math.pi / 2
+
+        while angle > math.pi do angle = angle - 2 * math.pi end
+        while angle < -math.pi do angle = angle + 2 * math.pi end
+
+        if angle > math.pi / 2 then
+            angle = math.pi - angle
+        elseif angle < -math.pi / 2 then
+            angle = -math.pi - angle
+        end
+
+        local maxTilt = math.pi / 18
+        if angle > maxTilt then
+            angle = maxTilt
+        elseif angle < -maxTilt then
+            angle = -maxTilt
+        end
+
+        self.rotation = angle
     end
+
 
     local w, h = self:getScaledDimensions()
     local ax, ay = self:getActualPostion()
@@ -61,7 +117,6 @@ function fly:update(dt)
         self.position.Y = Screen.Y - h + (self.offset.Y * self.scale.Y)
         self.velocity.Y = -self.velocity.Y
     end
-    
 end
 
 function fly:new(opts)

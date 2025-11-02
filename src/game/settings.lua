@@ -13,7 +13,8 @@ M.spider.maxNetPoints = 25
 M.spider.maxTTL = 20 -- seconds
 
 M.fly = {}
-M.fly.speed = 200
+M.fly.speed = 100
 M.fly.image = "assets/evil_fly_small.png"
+M.fly.spawnChance = 30 -- in %; per second
 
 return M
