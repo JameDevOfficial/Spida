@@ -1,6 +1,21 @@
 local spider = {}
 spider.__index = spider
 
+function spider._atan2(y, x)
+    if x > 0 then
+        return math.atan(y / x)
+    elseif x < 0 then
+        local angle = math.atan(y / x)
+        return y >= 0 and angle + math.pi or angle - math.pi
+    elseif y > 0 then
+        return math.pi / 2
+    elseif y < 0 then
+        return -math.pi / 2
+    else
+        return 0
+    end
+end
+
 function spider.initSpriteAsset()
     spider._sharedSprite = love.graphics.newImage(Settings.spider.image)
 end
@@ -24,7 +39,7 @@ function spider:update(dt)
 
     local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
     if speed > 10 then
-        self.rotation = math.atan2(self.velocity.Y, self.velocity.X) - math.pi / 2
+        self.rotation = spider._atan2(self.velocity.Y, self.velocity.X) - math.pi / 2
     end
 
     local w, h = self:getScaledDimensions()
