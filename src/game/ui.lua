@@ -5,6 +5,10 @@ M.backgroundImage:setFilter("nearest", "nearest") -- for sharp rendering and not
 
 local fontDefault = love.graphics.newFont(20)
 
+RGB = function(r, g, b)
+    return r / 255, g / 255, b / 255
+end
+
 local drawBackground = function()
     local bgW, bgH = M.backgroundImage:getDimensions()
     local screenW, screenH = love.graphics.getDimensions()
@@ -14,7 +18,8 @@ local drawBackground = function()
 
     love.graphics.draw(M.backgroundImage, offsetX, offsetY, 0, scale, scale)
 end
-local drawInfo = function()
+
+M.drawInfo = function()
     local prevShader = love.graphics.getShader()
     love.graphics.setShader()
     love.graphics.setFont(fontDefault)
@@ -24,13 +29,23 @@ local drawInfo = function()
     local width = fontDefault:getWidth(text)
     love.graphics.print(text, Screen.X - width - 10, 10)
 
+
+    local w, h = Screen.X / 3, Screen.Y / 25
+    local x, y = Screen.X / 2 - w / 2, 10
+    love.graphics.setColor(RGB(33,33,33))
+    love.graphics.rectangle("fill", x, y, w, h)
+
+    local w, h = Screen.X / 3, Screen.Y / 25
+    local x, y = Screen.X / 2 - w / 2, 10
+    love.graphics.setColor(RGB(198, 40, 40))
+    w = w * (Player.health / Settings.player.health)
+    love.graphics.rectangle("fill", x, y, w, h)
     love.graphics.setShader(prevShader)
 end
 
 M.renderFrame = function()
     love.graphics.setBackgroundColor(1, 1, 1)
     drawBackground()
-    drawInfo()
 end
 
 M.drawDebug = function()

@@ -11,7 +11,8 @@ Flies = {}
 Player = {
     spiderIndex = 1,
     killedFlies = 0,
-    health = Settings.player.health
+    health = Settings.player.health,
+    hasLost = false
 }
 
 function love.load()
@@ -34,6 +35,10 @@ function love.load()
 end
 
 function love.update(dt)
+    if Player.health <= 0 then
+        IsPaused = true
+        Player.hasLost = true
+    end
     if IsPaused then return end
     for i, v in ipairs(Spiders) do
         v:update(dt)
@@ -60,6 +65,7 @@ function love.draw()
         UI.drawDebug()
         love.graphics.setShader(prevShader)
     end
+    UI.drawInfo()
 end
 
 function love.resize()
@@ -76,6 +82,9 @@ function love.keypressed(key, scancode, isrepeat)
 
     if key == "f5" then
         Settings.DEBUG = not Settings.DEBUG
+    end
+    if key == "enter" and Player.hasLost == true then
+        Player.hasLost = false
     end
 end
 
