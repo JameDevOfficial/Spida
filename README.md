@@ -8,7 +8,7 @@ Spida is a 2D game in which you need to kill as many flies as possible without d
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Commits](https://img.shields.io/github/commit-activity/t/JameDevOfficial/Spida?label=Commits&color=F28C28&logo=git&logoColor=white)](https://github.com/JameDevOfficial/Spida/commits/main)
 <br />
-
+[![pages-build-deployment](https://github.com/JameDevOfficial/Spida/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/JameDevOfficial/Spida/actions/workflows/pages/pages-build-deployment)
 
 </div>
 
