@@ -5,7 +5,7 @@ M.backgroundImage:setFilter("nearest", "nearest") -- for sharp rendering and not
 
 local fontDefault = love.graphics.newFont(20)
 
-local drawBackground = function ()
+local drawBackground = function()
     local bgW, bgH = M.backgroundImage:getDimensions()
     local screenW, screenH = love.graphics.getDimensions()
     local scale = math.max(screenW / bgW, screenH / bgH)
@@ -15,7 +15,7 @@ local drawBackground = function ()
     love.graphics.draw(M.backgroundImage, offsetX, offsetY, 0, scale, scale)
 end
 
-M.renderFrame = function ()
+M.renderFrame = function()
     love.graphics.setBackgroundColor(1, 1, 1)
     drawBackground()
 end
@@ -46,7 +46,8 @@ M.drawDebug = function()
             "Images: %d\n" ..
             "Fonts: %d\n" ..
             "Player Net Points: %d\n" ..
-            "Spiders: %d",
+            "Spiders: %d\n" ..
+            "Flies: %d",
             usedMem / 1024,
             collectgarbage("count") > 0 and collectgarbage("count") / 10 or 0,
             stats.drawcalls,
@@ -55,10 +56,11 @@ M.drawDebug = function()
             stats.images,
             stats.fonts,
             #playerSpider.netPoints,
-            #Spiders
+            #Spiders,
+            #Flies
         )
         love.graphics.print(perfText, 10, y)
-        y = y + fontDefault:getHeight() * 9
+        y = y + fontDefault:getHeight() * 11
 
         -- Game
         local dt = love.timer.getDelta()
@@ -80,7 +82,7 @@ M.drawDebug = function()
             love.timer.getTime()
         )
         love.graphics.print(playerText, 10, y)
-        y = y + fontDefault:getHeight() * 10
+        y = y + fontDefault:getHeight() * 8
 
         -- System Info
         local renderer = love.graphics.getRendererInfo and love.graphics.getRendererInfo() or ""

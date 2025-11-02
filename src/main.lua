@@ -1,11 +1,13 @@
 Settings = require("game.settings")
 Spider = require("sprites.spider")
+Fly = require("sprites.fly")
 UI = require("game.ui")
 Shader = require("game.shader")
 
 IsPaused = false
 Screen = {}
 Spiders = {}
+Flies = {}
 Player = {
     spiderIndex = 1
 }
@@ -14,15 +16,19 @@ function love.load()
     Screen = UI.windowResized()
     math.randomseed(os.time());
     Shader.loadShader()
-    BackgroundMusic = love.audio.newSource('assets/Spooky_Forest.mp3', 'stream')
+    BackgroundMusic = love.audio.newSource(Settings.backgroundMusic, 'stream')
     BackgroundMusic:setLooping(true)
     BackgroundMusic:play()
     BackgroundMusic:setVolume(0.25)
-    -- sprites
+    -- spider
     Spider.initSpriteAsset()
     local spriteW, spriteH = Spider._sharedSprite:getDimensions()
     table.insert(Spiders, Spider:new({ isPlayer = true, offset = { X = spriteW / 2, Y = spriteH / 2 } }))
     Player.spiderIndex = #Spiders
+    --Fly
+    Fly.initSpriteAsset()
+    spriteW, spriteH = Fly._sharedSprite:getDimensions()
+    table.insert(Flies, Fly:new({ offset = { X = spriteW / 2, Y = spriteH / 2 } }))
 end
 
 function love.update(dt)
@@ -30,11 +36,17 @@ function love.update(dt)
     for i, v in ipairs(Spiders) do
         v:update(dt)
     end
+    for i, v in ipairs(Flies) do
+        v:update(dt)
+    end
 end
 
 function love.draw()
     UI.renderFrame()
     Shader.drawShader()
+    for i, v in ipairs(Flies) do
+        v:render()
+    end
     for i, v in ipairs(Spiders) do
         v:renderNet()
         v:render()
