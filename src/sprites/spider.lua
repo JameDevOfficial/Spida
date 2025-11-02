@@ -94,7 +94,7 @@ function spider:new(opts)
     o.size            = opts.size or { W = spider._sharedSprite:getWidth(), H = spider._sharedSprite:getHeight() }
     o.color           = opts.color or { 1, 1, 1, 1 }
     o.position        = opts.position or
-        { X = 500, Y = 500 }
+        { X = Screen.centerX, Y = Screen.centerY }
     o.velocity        = opts.velocity or { X = 0, Y = 0 }
     o.speed           = opts.speed or Settings.spider.speed
     o.damping         = opts.damping or 0.5
