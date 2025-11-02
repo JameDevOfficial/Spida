@@ -14,10 +14,23 @@ local drawBackground = function()
 
     love.graphics.draw(M.backgroundImage, offsetX, offsetY, 0, scale, scale)
 end
+local drawInfo = function()
+    local prevShader = love.graphics.getShader()
+    love.graphics.setShader()
+    love.graphics.setFont(fontDefault)
+    love.graphics.setColor(1, 1, 1, 1)
+
+    local text = string.format("Flies killed: %d", Player.killedFlies)
+    local width = fontDefault:getWidth(text)
+    love.graphics.print(text, Screen.X - width - 10, 10)
+
+    love.graphics.setShader(prevShader)
+end
 
 M.renderFrame = function()
     love.graphics.setBackgroundColor(1, 1, 1)
     drawBackground()
+    drawInfo()
 end
 
 M.drawDebug = function()

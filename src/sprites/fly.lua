@@ -21,9 +21,10 @@ function fly:checkNetCollision()
     if #playerSpider.netPoints < 2 then
         return false
     end
-
     local fX, fY = self:getActualPostion()
     local fW, fH = self:getScaledDimensions()
+    local cx = fX + fW / 2
+    local cy = fY + fH / 2
     local flyRadius = math.min(fW, fH) / 2.5 -- .5 for some tollerance
 
     for i = 1, #playerSpider.netPoints - 1 do
@@ -31,8 +32,7 @@ function fly:checkNetCollision()
         local p2 = playerSpider.netPoints[i + 1]
 
         if p1.newNet == false then
-            local distance = fly._pointToLineDistance(fX, fY, p1.X, p1.Y, p2.X, p2.Y)
-
+            local distance = fly._pointToLineDistance(cx, cy, p1.X, p1.Y, p2.X, p2.Y)
             if distance < flyRadius then
                 return true, i
             end
@@ -122,7 +122,19 @@ function fly:update(dt)
         self.isCaught = true
         self.velocity.X = 0
         self.velocity.Y = 0
-        print("Caught!")
+        self.caughtTimer = self.caughtTimer + dt
+        if self.caughtTimer > Settings.fly.timeToDie then
+            Player.killedFlies = Player.killedFlies + 1
+            for i, f in ipairs(Flies) do
+                if f == self then
+                    table.remove(Flies, i)
+                    break
+                end
+            end
+            collectgarbage("collect")
+        end
+    else
+        self.caughtTimer = 0
     end
 
     local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
@@ -177,9 +189,9 @@ function fly:new(opts)
     o.size            = opts.size or { W = fly._sharedSprite:getWidth(), H = fly._sharedSprite:getHeight() }
     o.color           = opts.color or { 1, 1, 1, 1 }
     o.position        = opts.position or
-        { X = Screen.centerX, Y = Screen.centerY }
+        { X = 0, Y = 0 }
     o.velocity        = opts.velocity or { X = 0, Y = 0 }
-    o.speed           = opts.speed or Settings.spider.speed
+    o.speed           = opts.speed or Settings.fly.speed
     o.damping         = opts.damping or 0.5
     o.rotation        = opts.rotation or 0
     o.sprite          = fly._sharedSprite
@@ -188,6 +200,8 @@ function fly:new(opts)
     o.lastPoint       = { X = 0, Y = 0 }
     o.lastPointInLine = { X = 0, Y = 0 }
     o.scale           = { X = 1, Y = 1 }
+    o.caughtTimer     = 0
+    o.isCaught        = false
     return o
 end
 
@@ -198,8 +212,13 @@ function fly:getActualPostion()
 end
 
 function fly:getScaledDimensions()
-    local spriteW, spriteH = Spider._sharedSprite:getDimensions()
-    return spriteW * self.scale.X, spriteH * self.scale.Y
+    local spriteW, spriteH = Fly._sharedSprite:getDimensions()
+    return spriteW, spriteH
+end
+
+function fly:getAABB()
+    local w, h = self:getScaledDimensions()
+    return self.position.X - w / 2, self.position.Y - h / 2, w, h
 end
 
 return fly

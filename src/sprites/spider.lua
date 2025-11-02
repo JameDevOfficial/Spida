@@ -16,6 +16,33 @@ function spider._atan2(y, x)
     end
 end
 
+function spider.aabbIntersect(x1, y1, w1, h1, x2, y2, w2, h2, tolerance)
+    tolerance = tolerance or 0
+
+    local x1T = x1 + tolerance
+    local y1T = y1 + tolerance
+    local w1T = w1 - (2 * tolerance)
+    local h1T = h1 - (2 * tolerance)
+
+    return x1T < x2 + w2 and
+        x2 < x1T + w1T and
+        y1T < y2 + h2 and
+        y2 < y1T + h1T
+end
+
+function spider:checkCollisons(dt, o)
+    if not o or not o.position then
+        return false
+    end
+    local bx, by, bw, bh = self:getAABB()
+    local ox, oy, ow, oh = o:getAABB()
+    if spider.aabbIntersect(bx, by, bw, bh, ox, oy, ow, oh, Settings.spider.tolerance) then
+        print("collision with fly", o)
+        return true
+    end
+    return false
+end
+
 function spider.initSpriteAsset()
     spider._sharedSprite = love.graphics.newImage(Settings.spider.image)
 end
@@ -36,6 +63,19 @@ function spider:update(dt)
 
     self.velocity.X = self.velocity.X * (self.damping ^ dt)
     self.velocity.Y = self.velocity.Y * (self.damping ^ dt)
+
+    if self.hitCooldown <= 0 then
+        for i = #Flies, 1, -1 do
+            if Flies[i] then
+                if self:checkCollisons(dt, Flies[i]) == true and Flies[i].isCaught == false then
+                    Player.health = Player.health - Settings.fly.damage
+                    self.hitCooldown = Settings.player.hitCooldown
+                end
+            end
+        end
+    else
+        self.hitCooldown = self.hitCooldown - dt
+    end
 
     local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
     if speed > 10 then
@@ -105,6 +145,7 @@ function spider:new(opts)
     o.lastPoint       = { X = 0, Y = 0 }
     o.lastPointInLine = { X = 0, Y = 0 }
     o.scale           = { X = 1, Y = 1 }
+    o.hitCooldown     = 0
     return o
 end
 
@@ -156,7 +197,12 @@ end
 
 function spider:getScaledDimensions()
     local spriteW, spriteH = Spider._sharedSprite:getDimensions()
-    return spriteW * self.scale.X, spriteH * self.scale.Y
+    return spriteW, spriteH
+end
+
+function spider:getAABB()
+    local w, h = self:getScaledDimensions()
+    return self.position.X - w / 2, self.position.Y - h / 2, w, h
 end
 
 return spider

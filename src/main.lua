@@ -10,7 +10,8 @@ Spiders = {}
 Flies = {}
 Player = {
     spiderIndex = 1,
-    killedFlies = 0
+    killedFlies = 0,
+    health = Settings.player.health
 }
 
 function love.load()
@@ -37,8 +38,8 @@ function love.update(dt)
     for i, v in ipairs(Spiders) do
         v:update(dt)
     end
-    for i, v in ipairs(Flies) do
-        v:update(dt)
+    for i = #Flies, 1, -1 do
+        Flies[i]:update(dt)
     end
     Fly.spawnRandom(dt)
 end
