@@ -106,7 +106,7 @@ function spider:saveLastLinePoint(newLine)
     if newLine == nil then newLine = false end
     local n = #self.netPoints
     local x, y = self:getActualPostion()
-    local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2, newNet = newLine }
+    local p = { X = x + self.size.W / 2, Y = y + self.size.H / 2, newNet = newLine, sTime = love.timer.getTime() }
 
     if n < 2 then
         table.insert(self.netPoints, p)
@@ -122,6 +122,9 @@ function spider:saveLastLinePoint(newLine)
         self.netPoints[n] = p
     else
         table.insert(self.netPoints, p)
+        if #self.netPoints > Settings.spider.maxNetPoints then
+            table.remove(self.netPoints, 1)
+        end
     end
 end
 
