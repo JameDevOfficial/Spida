@@ -70,6 +70,7 @@ function spider:update(dt)
                 if self:checkCollisons(dt, Flies[i]) == true and Flies[i].isCaught == false then
                     Player.health = Player.health - Settings.fly.damage
                     self.hitCooldown = Settings.player.hitCooldown
+                    break
                 end
             end
         end

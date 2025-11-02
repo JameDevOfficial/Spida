@@ -4,7 +4,7 @@ Fly = require("sprites.fly")
 UI = require("game.ui")
 Shader = require("game.shader")
 
-IsPaused = false
+IsPaused = true
 Screen = {}
 Spiders = {}
 Flies = {}
@@ -14,6 +14,20 @@ Player = {
     health = Settings.player.health,
     hasLost = false
 }
+
+local function resetGame()
+    Player.health = Settings.player.health
+    Player.killedFlies = 0
+    Player.hasLost = false
+    Spiders = {}
+    local spriteW, spriteH = Spider._sharedSprite:getDimensions()
+    table.insert(Spiders, Spider:new({ isPlayer = true, offset = { X = spriteW / 2, Y = spriteH / 2 } }))
+    Player.spiderIndex = #Spiders
+    Flies = {}
+    spriteW, spriteH = Fly._sharedSprite:getDimensions()
+    table.insert(Flies, Fly:new({ offset = { X = spriteW / 2, Y = spriteH / 2 } }))
+    IsPaused = false
+end
 
 function love.load()
     Screen = UI.windowResized()
@@ -32,14 +46,14 @@ function love.load()
     Fly.initSpriteAsset()
     spriteW, spriteH = Fly._sharedSprite:getDimensions()
     table.insert(Flies, Fly:new({ offset = { X = spriteW / 2, Y = spriteH / 2 } }))
+
 end
 
 function love.update(dt)
     if Player.health <= 0 then
-        IsPaused = true
         Player.hasLost = true
     end
-    if IsPaused then return end
+    if IsPaused or Player.hasLost then return end
     for i, v in ipairs(Spiders) do
         v:update(dt)
     end
@@ -66,6 +80,9 @@ function love.draw()
         love.graphics.setShader(prevShader)
     end
     UI.drawInfo()
+
+    if IsPaused then UI.drawMenu() end
+    if Player.hasLost then UI.lostScreen() end
 end
 
 function love.resize()
@@ -83,8 +100,11 @@ function love.keypressed(key, scancode, isrepeat)
     if key == "f5" then
         Settings.DEBUG = not Settings.DEBUG
     end
-    if key == "enter" and Player.hasLost == true then
-        Player.hasLost = false
+    if key == "return" and Player.hasLost == true then
+        resetGame()
+    end
+    if key == "return" and IsPaused == true then
+        IsPaused = false
     end
 end
 

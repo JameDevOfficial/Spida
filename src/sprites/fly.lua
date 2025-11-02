@@ -131,7 +131,6 @@ function fly:update(dt)
                     break
                 end
             end
-            collectgarbage("collect")
         end
     else
         self.caughtTimer = 0
