@@ -88,7 +88,7 @@ function spider:new(opts)
     o.size            = opts.size or { W = spider._sharedSprite:getWidth(), H = spider._sharedSprite:getHeight() }
     o.color           = opts.color or { 1, 1, 1, 1 }
     o.position        = opts.position or
-        { X = 100, Y = 100 }
+        { X = 500, Y = 500 }
     o.velocity        = opts.velocity or { X = 0, Y = 0 }
     o.speed           = opts.speed or Settings.spider.speed
     o.damping         = opts.damping or 0.5
@@ -117,14 +117,11 @@ function spider:saveLastLinePoint(newLine)
     local b = self.netPoints[n]
 
     local cross = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X)
-    local eps = 100
 
-    if math.abs(cross) <= eps then
-        print("Replaced")
+    if math.abs(cross) <= Settings.EPSILON then
         self.netPoints[n] = p
     else
         table.insert(self.netPoints, p)
-        print("New")
     end
 end
 

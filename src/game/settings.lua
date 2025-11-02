@@ -1,6 +1,7 @@
 local M = {}
 
 M.DEBUG = false
+M.EPSILON = 100
 M.backgroundImage = "assets/forest.png"
 M.Shader = true
 

@@ -18,14 +18,7 @@ end
 M.renderFrame = function ()
     love.graphics.setBackgroundColor(1, 1, 1)
     drawBackground()
-    if Settings.DEBUG == true then
-        local prevShader = love.graphics.getShader()
-        love.graphics.setShader()
-        M.drawDebug()
-        love.graphics.setShader(prevShader)
-    end
 end
-
 
 M.drawDebug = function()
     local playerSpider = Spiders[Player.spiderIndex]

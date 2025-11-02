@@ -39,6 +39,12 @@ function love.draw()
         v:renderNet()
         v:render()
     end
+    if Settings.DEBUG == true then
+        local prevShader = love.graphics.getShader()
+        love.graphics.setShader()
+        UI.drawDebug()
+        love.graphics.setShader(prevShader)
+    end
 end
 
 function love.resize()
