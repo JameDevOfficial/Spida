@@ -16,5 +16,6 @@ M.fly = {}
 M.fly.speed = 100
 M.fly.image = "assets/evil_fly_small.png"
 M.fly.spawnChance = 30 -- in %; per second
+M.fly.timeToDie = 2    -- seconds
 
 return M

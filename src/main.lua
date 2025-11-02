@@ -9,7 +9,8 @@ Screen = {}
 Spiders = {}
 Flies = {}
 Player = {
-    spiderIndex = 1
+    spiderIndex = 1,
+    killedFlies = 0
 }
 
 function love.load()

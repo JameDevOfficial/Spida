@@ -16,6 +16,49 @@ function fly._atan2(y, x)
     end
 end
 
+function fly:checkNetCollision()
+    local playerSpider = Spiders[Player.spiderIndex]
+    if #playerSpider.netPoints < 2 then
+        return false
+    end
+
+    local fX, fY = self:getActualPostion()
+    local fW, fH = self:getScaledDimensions()
+    local flyRadius = math.min(fW, fH) / 2.5 -- .5 for some tollerance
+
+    for i = 1, #playerSpider.netPoints - 1 do
+        local p1 = playerSpider.netPoints[i]
+        local p2 = playerSpider.netPoints[i + 1]
+
+        if p1.newNet == false then
+            local distance = fly._pointToLineDistance(fX, fY, p1.X, p1.Y, p2.X, p2.Y)
+
+            if distance < flyRadius then
+                return true, i
+            end
+        end
+    end
+
+    return false
+end
+
+function fly._pointToLineDistance(px, py, x1, y1, x2, y2)
+    local dx = x2 - x1
+    local dy = y2 - y1
+    local l2 = dx * dx + dy * dy
+
+    if l2 == 0 then
+        return math.sqrt((px - x1) * (px - x1) + (py - y1) * (py - y1))
+    end
+
+    local t = ((px - x1) * dx + (py - y1) * dy) / l2
+    t = math.max(0, math.min(1, t))
+    local closestX = x1 + t * dx
+    local closestY = y1 + t * dy
+
+    return math.sqrt((px - closestX) * (px - closestX) + (py - closestY) * (py - closestY))
+end
+
 fly.spawnDelay = 0
 function fly.spawnRandom(dt)
     fly.spawnDelay = fly.spawnDelay + dt
@@ -73,6 +116,14 @@ function fly:update(dt)
     self.velocity.X = self.velocity.X * (self.damping ^ dt)
     self.velocity.Y = self.velocity.Y * (self.damping ^ dt)
     self:crawl(dt)
+
+    local caught, segmentIndex = self:checkNetCollision()
+    if caught then
+        self.isCaught = true
+        self.velocity.X = 0
+        self.velocity.Y = 0
+        print("Caught!")
+    end
 
     local speed = math.sqrt(self.velocity.X * self.velocity.X + self.velocity.Y * self.velocity.Y)
     if speed > 10 then

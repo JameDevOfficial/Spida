@@ -48,7 +48,7 @@ function M.loadShader()
 end
 
 function M.drawShader()
-    if Settings.Shader == false then love.graphics.setShader() end
+    if Settings.Shader == false then love.graphics.setShader() return end
     if shader == nil then return end
 
     local playerSpider = Spiders[Player.spiderIndex]
