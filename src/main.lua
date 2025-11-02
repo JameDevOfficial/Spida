@@ -52,6 +52,10 @@ function love.keypressed(key, scancode, isrepeat)
     -- else
     --     print(key..", " .. scancode)
     -- end
+
+    if key == "f5" then
+        Settings.DEBUG = not Settings.DEBUG
+    end
 end
 
 function love.keyreleased(key, scancode)

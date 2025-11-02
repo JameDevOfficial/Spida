@@ -117,7 +117,7 @@ function spider:saveLastLinePoint(newLine)
     local b = self.netPoints[n]
 
     local cross = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X)
-    local eps = 1e-3
+    local eps = 100
 
     if math.abs(cross) <= eps then
         print("Replaced")

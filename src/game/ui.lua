@@ -3,6 +3,8 @@ local M = {}
 M.backgroundImage = love.graphics.newImage(Settings.backgroundImage)
 M.backgroundImage:setFilter("nearest", "nearest") -- for sharp rendering and not blurry
 
+local fontDefault = love.graphics.newFont(20)
+
 local drawBackground = function ()
     local bgW, bgH = M.backgroundImage:getDimensions()
     local screenW, screenH = love.graphics.getDimensions()
@@ -14,8 +16,88 @@ local drawBackground = function ()
 end
 
 M.renderFrame = function ()
-    love.graphics.setBackgroundColor(1,1,1)
+    love.graphics.setBackgroundColor(1, 1, 1)
     drawBackground()
+    if Settings.DEBUG == true then
+        local prevShader = love.graphics.getShader()
+        love.graphics.setShader()
+        M.drawDebug()
+        love.graphics.setShader(prevShader)
+    end
+end
+
+
+M.drawDebug = function()
+    local playerSpider = Spiders[Player.spiderIndex]
+    if Settings.DEBUG == true then
+        love.graphics.setFont(fontDefault)
+        love.graphics.setColor(1, 1, 1, 1)
+
+        local y = fontDefault:getHeight() + 10
+
+        -- FPS
+        local fps = love.timer.getFPS()
+        local fpsText = string.format("FPS: %d", fps)
+        love.graphics.print(fpsText, 10, y)
+        y = y + fontDefault:getHeight()
+
+        -- Performance
+        local stats = love.graphics.getStats()
+        local usedMem = collectgarbage("count")
+        local perfText = string.format(
+            "Memory: %.2f MB\n" ..
+            "GC Pause: %d%%\n" ..
+            "Draw Calls: %d\n" ..
+            "Canvas Switches: %d\n" ..
+            "Texture Memory: %.2f MB\n" ..
+            "Images: %d\n" ..
+            "Fonts: %d\n" ..
+            "Player Net Points: %d\n" ..
+            "Spiders: %d",
+            usedMem / 1024,
+            collectgarbage("count") > 0 and collectgarbage("count") / 10 or 0,
+            stats.drawcalls,
+            stats.canvasswitches,
+            stats.texturememory / 1024 / 1024,
+            stats.images,
+            stats.fonts,
+            #playerSpider.netPoints,
+            #Spiders
+        )
+        love.graphics.print(perfText, 10, y)
+        y = y + fontDefault:getHeight() * 9
+
+        -- Game
+        local dt = love.timer.getDelta()
+        local avgDt = love.timer.getAverageDelta()
+        local playerText = string.format(
+            "Game Paused: %s\n" ..
+            "Spider X: %.1f Y: %.1f\n" ..
+            "Velocity X: %.1f Y: %.1f\n" ..
+            "Rotation: %.1f°\n" ..
+            "Delta Time: %.4fs (%.1f ms)\n" ..
+            "Avg Delta: %.4fs (%.1f ms)\n" ..
+            "Time: %.2fs",
+            tostring(IsPaused),
+            playerSpider.position.X, playerSpider.position.Y,
+            playerSpider.velocity.X, playerSpider.velocity.Y,
+            playerSpider.rotation,
+            dt, dt * 1000,
+            avgDt, avgDt * 1000,
+            love.timer.getTime()
+        )
+        love.graphics.print(playerText, 10, y)
+        y = y + fontDefault:getHeight() * 10
+
+        -- System Info
+        local renderer = love.graphics.getRendererInfo and love.graphics.getRendererInfo() or ""
+        local systemText = string.format(
+            "OS: %s\nGPU: %s",
+            love.system.getOS(),
+            select(4, love.graphics.getRendererInfo()) or 0
+        )
+        love.graphics.print(systemText, 10, y)
+    end
 end
 
 M.windowResized = function()
